@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.example'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.12.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+application {
+    mainClass = 'com.example.app.App'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.example.app.App'
+        )
+    }
+}
