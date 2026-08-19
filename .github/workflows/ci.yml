@@ -73,9 +73,9 @@ jobs:
           echo "Ref: $GITHUB_REF"
           echo "Event: $GITHUB_EVENT_NAME"
 
-      - name: Send deployment command to EC2
+      - name: Deploy application to EC2
         run: |
           aws ssm send-command \
             --instance-ids i-08bff31980baf45ff \
             --document-name "AWS-RunShellScript" \
-            --parameters 'commands=["echo Deployment connection successful"]'
+            --parameters 'commands=["sudo pkill -f \"java -jar\" || true","sudo mkdir -p /home/ubuntu/app","sudo aws s3 cp s3://java-gradle-devops-952652904046/java-gradle-app.jar /home/ubuntu/app/application.jar","sudo nohup java -jar /home/ubuntu/app/application.jar > /home/ubuntu/app.log 2>&1 &"]'
