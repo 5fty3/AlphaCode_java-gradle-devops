@@ -38,34 +38,30 @@ jobs:
           name: java-gradle-app
           path: build/libs/*.jar
 
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
-    steps:
+    permissions:
+      id-token: write
+      contents: read
 
+    steps:
       - name: Download JAR artifact
         uses: actions/download-artifact@v7
         with:
           name: java-gradle-app
           path: app
 
-      - name: Copy JAR to EC2
-        uses: appleboy/scp-action@v1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "app/*.jar"
-          target: "/home/ubuntu/"
+          role-to-assume: arn:aws:iam::952652904046:role/GitHubActions-EC2-Deploy
+          aws-region: eu-north-1
 
-      - name: Deploy application
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            pkill -f 'java -jar' || true
-            nohup java -jar /home/ubuntu/*.jar > /home/ubuntu/app.log 2>&1 &
+      - name: Send deployment command to EC2
+        run: |
+          aws ssm send-command \
+            --instance-ids i-08bff31980baf45ff \
+            --document-name "AWS-RunShellScript" \
+            --parameters 'commands=["echo Deployment connection successful"]'
