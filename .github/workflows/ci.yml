@@ -57,18 +57,16 @@ jobs:
         run: |
           echo "Repository: $GITHUB_REPOSITORY"
           echo "Ref: $GITHUB_REF"
-          echo "Event: $GITHUB_EVENT_NAME" 
-
-      - name: Debug OIDC claims
-        uses: github/actions-oidc-debugger@main
-        with:
-          audience: sts.amazonaws.com      
+          echo "Event: $GITHUB_EVENT_NAME"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::952652904046:role/GitHubActions-EC2-Deploy
           aws-region: eu-north-1
+          role-session-name: GitHubActionsSession
+          retry-max-attempts: 1
+          mask-aws-account-id: false
 
       - name: Send deployment command to EC2
         run: |
