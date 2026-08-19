@@ -53,6 +53,15 @@ jobs:
           name: java-gradle-app
           path: app
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: arn:aws:iam::952652904046:role/GitHubActions-EC2-Deploy
+          aws-region: eu-north-1
+          role-session-name: GitHubActionsSession
+          retry-max-attempts: 1
+          mask-aws-account-id: false
+
       - name: Upload JAR to S3
         run: |
           aws s3 cp app/*.jar s3://java-gradle-devops-952652904046/java-gradle-app.jar
@@ -63,15 +72,6 @@ jobs:
           echo "Owner: $GITHUB_REPOSITORY_OWNER"
           echo "Ref: $GITHUB_REF"
           echo "Event: $GITHUB_EVENT_NAME"
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v5
-        with:
-          role-to-assume: arn:aws:iam::952652904046:role/GitHubActions-EC2-Deploy
-          aws-region: eu-north-1
-          role-session-name: GitHubActionsSession
-          retry-max-attempts: 1
-          mask-aws-account-id: false
 
       - name: Send deployment command to EC2
         run: |
