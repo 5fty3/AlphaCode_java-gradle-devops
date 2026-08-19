@@ -53,6 +53,9 @@ jobs:
           name: java-gradle-app
           path: app
 
+      - name: Upload JAR to S3
+        run: |
+          aws s3 cp app/*.jar s3://YOUR-BUCKET-NAME/java-gradle-app.jar
       - name: Check GitHub OIDC identity
         run: |
           echo "Repository: $GITHUB_REPOSITORY"
