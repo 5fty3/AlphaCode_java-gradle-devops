@@ -79,4 +79,4 @@ jobs:
           aws ssm send-command \
             --instance-ids i-08bff31980baf45ff \
             --document-name "AWS-RunShellScript" \
-            --parameters '{"commands":["sudo pkill -f java.jar || true","sudo mkdir -p /home/ubuntu/app","sudo aws s3 cp s3://java-gradle-devops-952652904046/java-gradle-app.jar /home/ubuntu/app/application.jar","sudo nohup java -jar /home/ubuntu/app/application.jar >/tmp/java-gradle-app.log 2>&1 &"]}'
+            --parameters '{"commands":["sudo mkdir -p /home/ubuntu/app","sudo aws s3 cp s3://java-gradle-devops-952652904046/java-gradle-app.jar /home/ubuntu/app/application.jar","sudo systemctl restart java-gradle-app"]}'
