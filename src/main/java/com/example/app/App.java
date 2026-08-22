@@ -19,7 +19,7 @@ public class App {
 
         server.createContext("/", exchange -> {
 
-            String response = "Hello from Java Gradle DevOps!";
+            String response = "Hello from Java Gradle DevOps CI/CD Pipeline!";
 
             exchange.sendResponseHeaders(
                     200,
