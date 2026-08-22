@@ -79,7 +79,7 @@ jobs:
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids i-08bff31980baf45ff \
             --document-name "AWS-RunShellScript" \
-            --parameters '{"commands":["sudo mkdir -p /home/ubuntu/app","sudo aws s3 cp s3://java-gradle-devops-952652904046/java-gradle-app.jar /home/ubuntu/app/application.jar","sudo systemctl restart java-gradle-app","sleep 5","curl -f http://localhost:8080"]}' \
+            --parameters '{"commands":["sudo mkdir -p /home/ubuntu/app","if [ -f /home/ubuntu/app/application.jar ]; then sudo cp /home/ubuntu/app/application.jar /home/ubuntu/app/application.jar.backup; fi","sudo aws s3 cp s3://java-gradle-devops-952652904046/java-gradle-app.jar /home/ubuntu/app/application.jar","sudo systemctl restart java-gradle-app","sleep 5","if curl -f http://localhost:8080; then echo \"Deployment successful\"; else echo \"Deployment failed - rolling back\"; sudo cp /home/ubuntu/app/application.jar.backup /home/ubuntu/app/application.jar; sudo systemctl restart java-gradle-app; exit 1; fi"]}' \
             --query "Command.CommandId" \
             --output text)
 
